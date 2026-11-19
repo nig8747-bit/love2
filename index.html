@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Для тебя ❤️</title>
+  <!-- Подключение элегантных шрифтов для поэтичной типографики -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Подключение Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Основные цветовые переменные глубокой романтической палитры */
+    :root {
+      --bg-deep: #0b0408;
+      --bg-burgundy: #230916;
+      --bg-plum: #150714;
+      --rose-gold: #f4c2c2;
+      --champagne: #fae6d9;
+      --accent-pink: #ff6b9d;
+      --glow-crimson: rgba(255, 84, 131, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-deep);
+      color: var(--champagne);
+      font-family: 'Montserrat', sans-serif;
+      user-select: none;
+    }
+
+    /* 1. Живой шёлковый градиентный фон в оттенках бургунди */
+    .ambient-bg {
+      position: fixed;
+      inset: -15%;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(122, 22, 64, 0.45) 0%, transparent 52%),
+        radial-gradient(circle at 78% 70%, rgba(168, 56, 93, 0.3) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, #230916 0%, #150714 55%, #0b0408 100%);
+      filter: blur(28px);
+      animation: silkDrift 18s ease-in-out infinite alternate;
+      z-index: 0;
+      transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    @keyframes silkDrift {
+      0% {
+        transform: scale(1) translate(0%, 0%) rotate(0deg);
+      }
+      50% {
+        transform: scale(1.06) translate(-2%, 1.5%) rotate(1.5deg);
+      }
+      100% {
+        transform: scale(1.03) translate(2%, -1.5%) rotate(-1.5deg);
+      }
+    }
+
+    /* Полноэкранный холст для частиц боке, созвездия-сердца и лепестков */
+    #scene-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Сцена-контейнер первого экрана */
+    .stage {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Розовое светящееся сердечко-бейдж в правом верхнем углу второго экрана */
+    .corner-heart-badge {
+      position: fixed;
+      top: 26px;
+      right: 28px;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.22), rgba(140, 28, 72, 0.3));
+      border: 1px solid rgba(255, 158, 191, 0.48);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 8px 28px rgba(255, 77, 136, 0.32),
+        inset 0 0 16px rgba(255, 182, 206, 0.22);
+      opacity: 0;
+      transform: translateY(-14px) scale(0.9);
+      pointer-events: none;
+      transition:
+        opacity 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.4s,
+        transform 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.4s;
+    }
+
+    body.is-opened .corner-heart-badge {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      animation: cornerFloat 4.2s ease-in-out infinite 3s;
+    }
+
+    @keyframes cornerFloat {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow:
+          0 8px 28px rgba(255, 77, 136, 0.32),
+          inset 0 0 16px rgba(255, 182, 206, 0.22);
+      }
+      50% {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow:
+          0 12px 34px rgba(255, 77, 136, 0.48),
+          inset 0 0 22px rgba(255, 182, 206, 0.34);
+      }
+    }
+
+    .corner-heart-svg {
+      width: 24px;
+      height: 24px;
+      fill: #ff6b9d;
+      filter: drop-shadow(0 0 8px rgba(255, 107, 157, 0.85));
+      animation: miniHeartBeat 2.4s ease-in-out infinite;
+    }
+
+    @keyframes miniHeartBeat {
+      0%, 100% { transform: scale(1); }
+      18% { transform: scale(1.18); }
+      34% { transform: scale(1.02); }
+      50% { transform: scale(1.14); }
+      70% { transform: scale(1); }
+    }
+
+    .corner-heart-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: 0.04em;
+      color: #ffd1e1;
+      text-shadow: 0 0 12px rgba(255, 107, 157, 0.7);
+    }
+
+    /* 2. Стеклянный конверт первого экрана */
+    .envelope-card {
+      position: relative;
+      width: min(88vw, 430px);
+      height: min(58vw, 275px);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(255, 224, 232, 0.09), rgba(255, 182, 193, 0.03));
+      border: 1px solid rgba(244, 194, 194, 0.26);
+      box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.65),
+        inset 0 0 32px rgba(244, 194, 194, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition:
+        transform 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.8s ease,
+        border-color 0.8s ease;
+      overflow: hidden;
+    }
+
+    .envelope-card:hover {
+      transform: translateY(-4px) scale(1.015);
+      border-color: rgba(244, 194, 194, 0.48);
+      box-shadow:
+        0 30px 75px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(255, 107, 157, 0.22),
+        inset 0 0 38px rgba(244, 194, 194, 0.14);
+    }
+
+    .envelope-card.opening {
+      opacity: 0;
+      transform: scale(1.12);
+      pointer-events: none;
+    }
+
+    /* Тонкие линии клапана конверта */
+    .envelope-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Пульсирующая сургучная печать цвета розового золота */
+    .wax-seal {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, #ffd3c4 0%, #e7a99b 42%, #b5656c 80%, #8c2446 100%);
+      box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.55),
+        0 0 26px rgba(255, 107, 157, 0.45),
+        inset 0 2px 6px rgba(255, 255, 255, 0.5),
+        inset 0 -4px 10px rgba(66, 10, 30, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: sealPulse 3.4s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .wax-seal::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 235, 240, 0.48);
+    }
+
+    @keyframes sealPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 10px 28px rgba(0, 0, 0, 0.55),
+          0 0 24px rgba(255, 107, 157, 0.4),
+          inset 0 2px 6px rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        transform: scale(1.06);
+        box-shadow:
+          0 14px 34px rgba(0, 0, 0, 0.6),
+          0 0 42px rgba(255, 126, 172, 0.72),
+          inset 0 2px 8px rgba(255, 255, 255, 0.65);
+      }
+    }
+
+    .seal-heart {
+      font-size: 26px;
+      color: #fff2f5;
+      text-shadow: 0 2px 8px rgba(95, 14, 42, 0.6);
+      transform: translateY(1px);
+    }
+
+    .envelope-hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(250, 230, 217, 0.7);
+      font-weight: 300;
+      transition: opacity 0.6s ease;
+    }
+
+    /* 3. Блок финального признания на втором экране */
+    .love-content {
+      position: fixed;
+      bottom: 8vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(92vw, 740px);
+      text-align: center;
+      pointer-events: none;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .love-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: clamp(36px, 6.2vw, 66px);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #fff5f7 0%, #f7bfd0 45%, #ffd8be 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 22px rgba(255, 107, 157, 0.55));
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+      transition:
+        opacity 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.5s,
+        transform 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.5s;
+    }
+
+    .love-phrase {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(20px, 3vw, 29px);
+      line-height: 1.38;
+      color: rgba(250, 234, 226, 0.94);
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65), 0 0 24px rgba(255, 128, 171, 0.25);
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 1.8s cubic-bezier(0.22, 1, 0.36, 1) 2.2s,
+        transform 1.8s cubic-bezier(0.22, 1, 0.36, 1) 2.2s;
+    }
+
+    .love-phrase.second {
+      color: rgba(244, 198, 212, 0.92);
+      transition-delay: 2.9s;
+    }
+
+    body.is-opened .love-heading,
+    body.is-opened .love-phrase {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Деликатная кнопка повтора в правом нижнем углу */
+    .replay-btn {
+      position: fixed;
+      bottom: 18px;
+      right: 22px;
+      z-index: 5;
+      background: rgba(255, 228, 235, 0.06);
+      border: 1px solid rgba(244, 194, 194, 0.22);
+      color: rgba(250, 230, 217, 0.6);
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.6s ease;
+    }
+
+    body.is-opened .replay-btn {
+      opacity: 1;
+      pointer-events: auto;
+      transition-delay: 3.6s;
+    }
+
+    .replay-btn:hover {
+      color: #ffffff;
+      border-color: rgba(244, 194, 194, 0.55);
+      background: rgba(255, 107, 157, 0.18);
+    }
+
+    @media (max-width: 600px) {
+      .corner-heart-badge {
+        top: 16px;
+        right: 16px;
+        padding: 8px 14px;
+      }
+      .corner-heart-text {
+        font-size: 17px;
+      }
+      .love-content {
+        bottom: 7.5vh;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Живой градиентный фон -->
+  <div class="ambient-bg" id="ambientBg"></div>
+
+  <!-- Полноэкранный Canvas для огней боке, спирали частиц, созвездия-сердца и лепестков -->
+  <canvas id="scene-canvas"></canvas>
+
+  <!-- Розовое сердечко-бейдж в правом верхнем углу второго экрана -->
+  <div class="corner-heart-badge" id="cornerHeart">
+    <svg class="corner-heart-svg" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+    <span class="corner-heart-text">I love you</span>
+  </div>
+
+  <!-- Первый экран: стеклянный конверт -->
+  <main class="stage">
+    <div class="envelope-card" id="envelopeCard" role="button" tabindex="0" aria-label="Открыть послание">
+      <svg class="envelope-lines" viewBox="0 0 430 275" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(244, 194, 194, 0.42)" />
+            <stop offset="50%" stop-color="rgba(255, 232, 224, 0.22)" />
+            <stop offset="100%" stop-color="rgba(244, 194, 194, 0.42)" />
+          </linearGradient>
+        </defs>
+        <!-- Верхний клапан конверта -->
+        <path d="M 8 8 L 215 148 L 422 8" fill="none" stroke="url(#lineGrad)" stroke-width="1.2" />
+        <!-- Нижние складки конверта -->
+        <path d="M 8 267 L 155 155" fill="none" stroke="url(#lineGrad)" stroke-width="1" opacity="0.65" />
+        <path d="M 422 267 L 275 155" fill="none" stroke="url(#lineGrad)" stroke-width="1" opacity="0.65" />
+      </svg>
+
+      <div class="wax-seal">
+        <span class="seal-heart">♥</span>
+      </div>
+      <div class="envelope-hint">Жмякай</div>
+    </div>
+  </main>
+
+  <!-- Второй экран: заголовок и две романтические фразы -->
+  <section class="love-content" aria-live="polite">
+    <h1 class="love-heading">Я тебя люблю ❤️</h1>
+    <p class="love-phrase">Ты умеешь сделать мой день лучше одной только улыбкой.</p>
+    <p class="love-phrase second">Рядом с тобой даже самые обычные дни становятся особенными</p>
+  </section>
+
+  <!-- Кнопка перезапуска -->
+  <button class="replay-btn" id="replayBtn" type="button">↻ заново</button>
+
+  <script>
+    // Инициализация основных элементов
+    const canvas = document.getElementById('scene-canvas');
+    const ctx = canvas.getContext('2d');
+    const envelopeCard = document.getElementById('envelopeCard');
+    const replayBtn = document.getElementById('replayBtn');
+    const ambientBg = document.getElementById('ambientBg');
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+
+    let isOpened = false;
+    let openProgress = 0;
+    let openStartTime = 0;
+
+    // Координаты параллакса для плавного отклика на движение
+    const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+    // Коллекции частиц
+    let bokehOrbs = [];
+    let heartParticles = [];
+    let petals = [];
+    let touchSparks = [];
+
+    const PALETTE = [
+      '#ffd6e0',
+      '#ff9ebb',
+      '#f4c2c2',
+      '#fae6d9',
+      '#ff759f'
+    ];
+
+    /**
+     * Адаптивное изменение размеров Canvas с учётом плотности пикселей
+     */
+    function resize() {
+      try {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildHeartTargets();
+      } catch (err) {
+        console.error('Ошибка при обновлении размеров холста:', err);
+      }
+    }
+
+    window.addEventListener('resize', resize);
+
+    /**
+     * Параметрическая формула объёмного сердца
+     */
+    function getHeartPoint(t, scale) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+      return {
+        x: x * scale,
+        y: y * scale
+      };
+    }
+
+    /**
+     * Инициализация фоновых огней боке
+     */
+    function initBokeh() {
+      bokehOrbs = [];
+      const count = 26;
+      for (let i = 0; i < count; i++) {
+        bokehOrbs.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: 25 + Math.random() * 85,
+          vx: (Math.random() - 0.5) * 0.16,
+          vy: -0.07 - Math.random() * 0.15,
+          alpha: 0.03 + Math.random() * 0.06,
+          phase: Math.random() * Math.PI * 2,
+          color: i % 2 === 0 ? '255, 140, 175' : '250, 224, 205'
+        });
+      }
+    }
+
+    /**
+     * Расчёт целевых координат частиц для светящегося созвездия-сердца
+     */
+    function buildHeartTargets() {
+      const minSide = Math.min(width, height);
+      const baseScale = Math.max(7.2, Math.min(13.2, minSide / 58));
+      const centerX = width * 0.5;
+      const centerY = height * 0.34;
+
+      const total = 240;
+      const oldParticles = heartParticles;
+      heartParticles = [];
+
+      for (let i = 0; i < total; i++) {
+        const isOutline = i < 150;
+        const t = (i / (isOutline ? 150 : 90)) * Math.PI * 2 + (isOutline ? 0 : Math.random() * 0.4);
+        const layerScale = isOutline
+          ? baseScale * (0.95 + Math.random() * 0.1)
+          : baseScale * (0.25 + Math.random() * 0.68);
+
+        const pt = getHeartPoint(t, layerScale);
+        const targetX = centerX + pt.x;
+        const targetY = centerY + pt.y;
+
+        const prev = oldParticles[i];
+        const startAngle = Math.random() * Math.PI * 2;
+        const startDist = 15 + Math.random() * 75;
+
+        heartParticles.push({
+          startX: prev ? prev.startX : width * 0.5 + Math.cos(startAngle) * startDist,
+          startY: prev ? prev.startY : height * 0.5 + Math.sin(startAngle) * startDist,
+          targetX,
+          targetY,
+          size: isOutline ? (1.4 + Math.random() * 1.9) : (1.0 + Math.random() * 1.4),
+          color: PALETTE[i % PALETTE.length],
+          phase: Math.random() * Math.PI * 2,
+          orbitRadius: 1.5 + Math.random() * 3.5,
+          orbitSpeed: 0.8 + Math.random() * 1.4,
+          delay: Math.random() * 0.32
+        });
+      }
+    }
+
+    /**
+     * Генерация парящего лепестка
+     */
+    function spawnPetal(fromTop = true) {
+      petals.push({
+        x: Math.random() * width,
+        y: fromTop ? -20 : Math.random() * height,
+        size: 5 + Math.random() * 6,
+        speedY: 0.42 + Math.random() * 0.7,
+        swayAmp: 18 + Math.random() * 28,
+        swayFreq: 0.012 + Math.random() * 0.015,
+        phase: Math.random() * Math.PI * 2,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.025,
+        alpha: 0.25 + Math.random() * 0.45,
+        color: Math.random() > 0.4 ? '#ff9ebb' : '#f7cad0'
+      });
+    }
+
+    /**
+     * Генерация световых искр в точке касания или движения курсора
+     */
+    function spawnTouchSparks(x, y, count = 10) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.5 + Math.random() * 2.1;
+        touchSparks.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 0.5,
+          life: 1,
+          decay: 0.014 + Math.random() * 0.012,
+          size: 1.5 + Math.random() * 2.2,
+          color: PALETTE[Math.floor(Math.random() * PALETTE.length)]
+        });
+      }
+    }
+
+    /**
+     * Плавная функция замедления для перелёта частиц в созвездие
+     */
+    function easeOutQuint(x) {
+      return 1 - Math.pow(1 - x, 5);
+    }
+
+    /**
+     * Открытие конверта и переход ко второму экрану
+     */
+    function openEnvelope() {
+      if (isOpened) return;
+      isOpened = true;
+      openStartTime = performance.now();
+      envelopeCard.classList.add('opening');
+      document.body.classList.add('is-opened');
+
+      spawnTouchSparks(width * 0.5, height * 0.5, 38);
+      for (let i = 0; i < 24; i++) {
+        spawnPetal(false);
+      }
+    }
+
+    /**
+     * Сброс анимации в исходное состояние
+     */
+    function resetExperience() {
+      isOpened = false;
+      openProgress = 0;
+      petals = [];
+      envelopeCard.classList.remove('opening');
+      document.body.classList.remove('is-opened');
+      buildHeartTargets();
+    }
+
+    envelopeCard.addEventListener('click', openEnvelope);
+    envelopeCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openEnvelope();
+      }
+    });
+    replayBtn.addEventListener('click', resetExperience);
+
+    window.addEventListener('pointermove', (e) => {
+      pointer.targetX = (e.clientX / width - 0.5) * 2;
+      pointer.targetY = (e.clientY / height - 0.5) * 2;
+      if (Math.random() < 0.35) {
+        spawnTouchSparks(e.clientX, e.clientY, 1);
+      }
+    }, { passive: true });
+
+    window.addEventListener('pointerdown', (e) => {
+      spawnTouchSparks(e.clientX, e.clientY, 12);
+    }, { passive: true });
+
+    /**
+     * Главный цикл отрисовки анимации
+     */
+    function render(now) {
+      try {
+        const time = now * 0.001;
+
+        // Плавный параллакс фона
+        pointer.x += (pointer.targetX - pointer.x) * 0.04;
+        pointer.y += (pointer.targetY - pointer.y) * 0.04;
+        ambientBg.style.transform = `translate(${pointer.x * -14}px, ${pointer.y * -14}px) scale(1.06)`;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. Отрисовка парящих огней боке
+        for (let i = 0; i < bokehOrbs.length; i++) {
+          const orb = bokehOrbs[i];
+          orb.x += orb.vx;
+          orb.y += orb.vy;
+          if (orb.y < -orb.r) orb.y = height + orb.r;
+          if (orb.x < -orb.r) orb.x = width + orb.r;
+          if (orb.x > width + orb.r) orb.x = -orb.r;
+
+          const pulse = 0.75 + 0.25 * Math.sin(time * 0.9 + orb.phase);
+          const grad = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r);
+          grad.addColorStop(0, `rgba(${orb.color}, ${orb.alpha * pulse})`);
+          grad.addColorStop(1, `rgba(${orb.color}, 0)`);
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 2. Анимация созвездия-сердца и лепестков после открытия конверта
+        if (isOpened) {
+          const elapsed = (now - openStartTime) / 1000;
+          openProgress = Math.min(1, elapsed / 2.6);
+
+          const heartBeat = 1 + Math.pow(Math.sin(time * 2.4), 8) * 0.055;
+          const centerX = width * 0.5 + pointer.x * 12;
+          const centerY = height * 0.34 + pointer.y * 10;
+
+          // Мягкое свечение позади созвездия
+          if (openProgress > 0.15) {
+            const glowAlpha = Math.min(0.24, (openProgress - 0.15) * 0.3);
+            const glowRadius = Math.min(width, height) * 0.28 * heartBeat;
+            const heartGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius);
+            heartGlow.addColorStop(0, `rgba(255, 107, 157, ${glowAlpha})`);
+            heartGlow.addColorStop(0.55, `rgba(217, 83, 122, ${glowAlpha * 0.45})`);
+            heartGlow.addColorStop(1, 'rgba(217, 83, 122, 0)');
+            ctx.fillStyle = heartGlow;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, glowRadius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Спиральный перелёт и пульсация частиц сердца
+          const drawnPositions = [];
+          for (let i = 0; i < heartParticles.length; i++) {
+            const p = heartParticles[i];
+            const localT = Math.max(0, Math.min(1, (elapsed - p.delay) / 2.1));
+            const ease = easeOutQuint(localT);
+
+            const relX = (p.targetX - width * 0.5) * heartBeat;
+            const relY = (p.targetY - height * 0.34) * heartBeat;
+
+            const floatX = Math.cos(time * p.orbitSpeed + p.phase) * p.orbitRadius * ease;
+            const floatY = Math.sin(time * p.orbitSpeed + p.phase) * p.orbitRadius * ease;
+
+            const destX = centerX + relX + floatX;
+            const destY = centerY + relY + floatY;
+
+            const swirl = (1 - ease) * 48 * Math.sin(i * 0.5 + elapsed * 3);
+            const x = p.startX + (destX - p.startX) * ease + swirl;
+            const y = p.startY + (destY - p.startY) * ease;
+
+            if (i < 150) {
+              drawnPositions.push({ x, y, ease });
+            }
+
+            const alpha = Math.min(1, localT * 1.6) * (0.65 + 0.35 * Math.sin(time * 2.2 + p.phase));
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = '#ff759f';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(x, y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // Тонкие шёлковые нити созвездия по контуру сердца
+          if (openProgress > 0.45) {
+            const lineAlpha = Math.min(0.22, (openProgress - 0.45) * 0.4);
+            ctx.save();
+            ctx.strokeStyle = `rgba(255, 194, 214, ${lineAlpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            for (let i = 0; i < drawnPositions.length; i++) {
+              const pt = drawnPositions[i];
+              if (i === 0) ctx.moveTo(pt.x, pt.y);
+              else ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // Парящие лепестки
+          if (petals.length < 34 && Math.random() < 0.08) {
+            spawnPetal(true);
+          }
+
+          for (let i = petals.length - 1; i >= 0; i--) {
+            const pt = petals[i];
+            pt.y += pt.speedY;
+            pt.phase += pt.swayFreq;
+            pt.rotation += pt.rotSpeed;
+            const drawX = pt.x + Math.sin(pt.phase) * pt.swayAmp;
+
+            ctx.save();
+            ctx.translate(drawX, pt.y);
+            ctx.rotate(pt.rotation);
+            ctx.globalAlpha = pt.alpha * Math.min(1, openProgress * 1.5);
+            ctx.fillStyle = pt.color;
+            ctx.beginPath();
+            ctx.moveTo(0, -pt.size);
+            ctx.bezierCurveTo(pt.size, -pt.size * 0.4, pt.size * 0.8, pt.size, 0, pt.size * 1.2);
+            ctx.bezierCurveTo(-pt.size * 0.8, pt.size, -pt.size, -pt.size * 0.4, 0, -pt.size);
+            ctx.fill();
+            ctx.restore();
+
+            if (pt.y > height + 30) {
+              petals.splice(i, 1);
+            }
+          }
+        }
+
+        // 3. Световые искры от касаний и движения курсора
+        for (let i = touchSparks.length - 1; i >= 0; i--) {
+          const s = touchSparks[i];
+          s.x += s.vx;
+          s.y += s.vy;
+          s.life -= s.decay;
+
+          if (s.life <= 0) {
+            touchSparks.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = s.life * 0.85;
+          ctx.fillStyle = s.color;
+          ctx.shadowColor = s.color;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(render);
+      } catch (err) {
+        console.error('Ошибка в цикле анимации:', err);
+      }
+    }
+
+    // Запуск после полной загрузки окна
+    window.onload = function () {
+      resize();
+      initBokeh();
+      requestAnimationFrame(render);
+    };
+  </script>
+</body>
+</html>
